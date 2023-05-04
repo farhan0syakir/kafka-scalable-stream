@@ -1,6 +1,5 @@
 package com.example.kafkascalablestream;
 
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.serialization.Serdes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +8,6 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
-import org.springframework.kafka.config.TopicBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,12 +22,6 @@ public class AppConfig {
 	@Value(value = "${spring.kafka.bootstrap-servers}")
 	private String bootstrapAddress;
 
-	@Value(value = "${spring.kafka.streams.state.dir}")
-	private String stateStoreLocation;
-
-	@Value("${myapp.input-topic}")
-	private String inputTopic;
-
 	@Value("${myapp.application-id}")
 	private String applicationId;
 
@@ -40,18 +32,8 @@ public class AppConfig {
 		props.put(BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
 		props.put(DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 		props.put(DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-		// configure the state location to allow tests to use clean state for every run
-		props.put(STATE_DIR_CONFIG, stateStoreLocation);
 
 		return new KafkaStreamsConfiguration(props);
-	}
-
-	@Bean
-	NewTopic inputTopic() {
-		return TopicBuilder.name(inputTopic)
-				.partitions(3)
-				.replicas(1)
-				.build();
 	}
 
 }

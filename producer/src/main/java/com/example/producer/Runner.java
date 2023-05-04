@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @AllArgsConstructor
-
 public class Runner implements CommandLineRunner {
     private final KafkaProducer kafkaProducer;
 

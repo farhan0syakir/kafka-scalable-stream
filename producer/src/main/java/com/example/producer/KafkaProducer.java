@@ -1,19 +1,21 @@
 package com.example.producer;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@AllArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class KafkaProducer {
-
     private final KafkaTemplate<String, String> kafkaTemplate;
 
+    @Value("${myapp.input-topic}")
+    String inputTopic;
+
     public void sendMessage(String message) {
-        String inputTopic = "my-input-topic";
         kafkaTemplate.send(inputTopic, message)
                 .addCallback(
                         result -> log.info("Message sent to topic: {}", message),

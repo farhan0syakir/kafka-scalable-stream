@@ -11,12 +11,15 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class WordCountProcessor {
+public class StreamProcessor {
 
     private static final Serde<String> STRING_SERDE = Serdes.String();
 
     @Value("${myapp.input-topic}")
     private String inputTopic;
+
+    @Value("${myapp.output-topic}")
+    private String outputTopic;
 
     @Autowired
     void buildPipeline(StreamsBuilder streamsBuilder) {
@@ -24,7 +27,7 @@ public class WordCountProcessor {
                 .stream(inputTopic, Consumed.with(STRING_SERDE, STRING_SERDE))
                 .mapValues(value -> value.toUpperCase())
                 .peek((key, value) -> log.info("print: {} {}", key, value))
-                .to("output-topic");
+                .to(outputTopic);
     }
 
 }
